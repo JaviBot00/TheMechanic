@@ -14,7 +14,7 @@ public class Client extends Person {
      * Custom ordering for Client
      * Compares clients based on their client code.
      */
-    public static final Comparator<Client> BY_COD_CLIENTE = Comparator.comparingInt(Client::getClientCode);
+    public static final Comparator<Client> BY_COD_CLIENT = Comparator.comparingInt(Client::getClientCode);
     private static final String CSV_FORMAT = "clientCode";
     private final int clientCode;
     private final List<Vehicle> vehicles;
@@ -35,6 +35,16 @@ public class Client extends Person {
         super(name, surname1, surname2, nif, email, telephone);
         this.clientCode = clientCode;
         this.vehicles = new ArrayList<>();
+    }
+
+    /**
+     * Retrieves the CSV format string for the Client class, which includes the CSV format of the Person class and the clientCode attribute.
+     * The format is: "name;surname1;surname2;nif;email;telephone;clientCode"
+     *
+     * @return A string representing the CSV format for the Client class.
+     */
+    public static String getCsvFormat() {
+        return Person.getCsvFormat() + ";" + Client.CSV_FORMAT;
     }
 
     /**
@@ -61,7 +71,6 @@ public class Client extends Person {
         if (index < 0 || index >= vehicles.size()) return null;
         return vehicles.get(index);
     }
-
 
     /**
      * Retrieves a vehicle from the client's list of vehicles based on its registration code.
@@ -100,12 +109,11 @@ public class Client extends Person {
      * Updates a vehicle in the client's list of vehicles based on its registration code.
      * The method searches for the vehicle with the specified registration code and replaces it with the new vehicle information if found.
      *
-     * @param rC The registration code of the vehicle to be updated.
+     * @param rC   The registration code of the vehicle to be updated.
      * @param newV The new vehicle information to replace the existing vehicle.
      * @return true if the vehicle was updated successfully, false if no such vehicle exists in the client's list or if the new vehicle is null.
      */
     public boolean updateVehicle(String rC, Vehicle newV) {
-
 //        Vehicle v = this.getVehicleByRegistrationCode(rC);
 //        if (v == null) return false;
         if (newV == null) return false;
@@ -125,34 +133,19 @@ public class Client extends Person {
      * Deletes a vehicle from the client's list of vehicles based on its registration code.
      * The method searches for the vehicle with the specified registration code and removes it from the list if found.
      *
-     * @param rC The registration code of the vehicle to be deleted.
+     * @param v The vehicle to be removed.
      * @return true if the vehicle was deleted successfully, false if no such vehicle exists in the client's list.
      */
-    public boolean deleteVehicle(String rC) {
-        Vehicle v = this.getVehicleByRegistrationCode(rC);
-        if (v != null) {
-            vehicles.remove(v);
-            return true;
-        }
-        return false;
+    public boolean deleteVehicle(Vehicle v) {
+        return vehicles.remove(v);
     }
 
     public int getClientCode() {
         return clientCode;
     }
 
-    public int getVehiclesCount() {
+    public int getVehiclesSize() {
         return vehicles.size();
-    }
-
-    /**
-     * Retrieves the CSV format string for the Client class, which includes the CSV format of the Person class and the clientCode attribute.
-     * The format is: "name;surname1;surname2;nif;email;telephone;clientCode"
-     *
-     * @return A string representing the CSV format for the Client class.
-     */
-    public static String getCsvFormat() {
-        return Person.getCsvFormat() + ";" + Client.CSV_FORMAT;
     }
 
     /**
@@ -169,6 +162,14 @@ public class Client extends Person {
         return super.toString() + clientCode + ";";
     }
 
+    /**
+     * Compares this client with another person based on their client codes.
+     * If the other person is not a Client, it delegates to the superclass's compareTo method.
+     * Otherwise, it compares the client codes of this client and the other person.
+     * 
+     * @param p The other person to compare with
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object
+     */
     @Override
     public int compareTo(Person p) {
         if (!(p instanceof Client)) {
