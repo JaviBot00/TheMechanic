@@ -3,7 +3,7 @@ package Taller.model;
 public class Motorcycle extends Vehicle {
 
     public Motorcycle(String registrationCode, String model, Client proprietary) {
-        super(registrationCode, model, proprietary);
+        super(registrationCode, model, VehicleType.MOTORCYCLE, proprietary);
     }
 
     @Override
