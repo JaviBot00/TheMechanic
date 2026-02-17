@@ -1,4 +1,9 @@
-package Taller.model;
+package Taller.data;
+
+import Taller.model.Client;
+import Taller.model.Mechanic;
+import Taller.model.Vehicle;
+import Taller.model.WorkshopTask;
 
 import java.util.ArrayList;
 import java.util.List;

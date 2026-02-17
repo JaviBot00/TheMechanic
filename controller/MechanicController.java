@@ -1,6 +1,6 @@
 package Taller.controller;
 
-import Taller.model.DataStore;
+import Taller.data.DataStore;
 import Taller.model.Mechanic;
 
 public class MechanicController {

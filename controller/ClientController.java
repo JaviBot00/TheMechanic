@@ -1,7 +1,7 @@
 package Taller.controller;
 
 import Taller.model.Client;
-import Taller.model.DataStore;
+import Taller.data.DataStore;
 
 public class ClientController {
 
