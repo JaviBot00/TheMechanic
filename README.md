@@ -1,56 +1,37 @@
-# TrabajoTaller
+# The Mechanic Workshop System
 
-## Descripción del Proyecto
+## Description
 
-Vamos a realizar, desde cero, las clases necesarias para implementar en Java con consola un sistema de control de los
-trabajos de un taller de reparación mecánica de vehículos a motor (motos, coches, furgones y camiones).
+This project is a workshop management system for a mechanic workshop. It allows managing clients, vehicles, mechanics, and workshop tasks. The system is built using Java and follows object-oriented programming principles.
 
-## Requisitos del Sistema
+## Features
 
-El sistema debe permitir:
+- Manage clients with personal information and vehicle ownership
+- Manage vehicles with make, model, and associated client information
+- Manage mechanics with personal information and specialization details
+- Manage workshop tasks with description, duration, date, associated client and vehicle, and assigned mechanic
 
-- Un vehículo entrará al taller y le tomaremos los siguientes datos:
-    - Matrícula
-    - Modelo
-    - Nombre y Apellidos del dueño
-    - DNI del dueño
-    - Fecha de entrada
-    - Hora de entrada
+## Implementation Details
 
-- Una vez incluido en el sistema, nuestros mecánicos tendrán que evaluar el vehículo determinando el problema que señala
-  el client (o la necesidad que plantea) y la posible solución. También se determinará un número de horas previsto de
-  trabajo para realización de la reparación/mantenimiento. Por lo tanto, un "trabajoTaller" tendrá una descripción del
-  problema, solución prevista, número de horas previstas, número de horas reales, y si ha sido paid o no.
+The system is implemented using Java with a modular design. The core classes are defined in the `model` package, and the data is managed in the `DataStore` class within the `data` package. The main application logic is in the `Main` class, which provides a simple console interface for interacting with the system.
 
-- Una vez el vehículo esté reparado/acondicionado, se apuntarán las horas reales realizadas en el proceso (pueden
-  diferir de las calculadas originalmente), y se procederá a efectuar un cobro, calculado a partir de las horas
-  realizadas y del tipo de vehículo (en principio nuestro sistema sólo se encarga de facturar horas de trabajo hombre).
+## Usage
 
-- El tipo de cobro será:
-    - Motos: 20€/hora
-    - Coches: 25€/hora
-    - Furgones:30€/hora + un fijo de dificultad de 30€
-    - Camiones: 40€/hora + un fijo de dificultad de 50€
+To run the application, compile the Java files and execute the `Main` class. The console will prompt you to enter information for clients, vehicles, mechanics, and workshop tasks. Follow the prompts to manage the workshop effectively. You can add multiple clients, vehicles, mechanics, and tasks as needed. The system will display the entered information for verification. You can extend the functionality by adding features such as editing and deleting records, searching for specific entries, and generating reports based on the workshop data.
 
-## TRABAJO
+## Future Enhancements
 
-Realizar las clases:
+- Implement a graphical user interface (GUI) for easier interaction
+- Add functionality for editing and deleting records
+- Implement search functionality for clients, vehicles, mechanics, and tasks
+- Generate reports based on workshop data, such as task summaries and mechanic performance
+- Integrate a database for persistent data storage instead of using in-memory lists
+- Implement user authentication and role-based access control for better security
+- Add functionality for scheduling tasks and managing appointments
+- Implement notifications for upcoming tasks and deadlines
+- Integrate with external APIs for vehicle information and parts ordering
+- Add support for multiple workshops and locations
 
-- TrabajoTaller
-- Vehiculo
-- Moto
-- Coche
-- Furgon
-- Camion
-- MainTaller
+## Conclusion
 
-Se realizará el siguiente interfaz:
-
-- Consola System in/out: añadir interfaz de texto para poder introducir vehículos, de los cuatro tipos, trabajos a cada
-  uno de los vehículos introducidos y poder calcular cobros
-
-## CompareTo
-
-- negative → this < other
-- zero → this == other
-- positive → this > other
+The Mechanic Workshop System is a comprehensive solution for managing a mechanic workshop's operations. It provides a structured way to handle clients, vehicles, mechanics, and tasks, ensuring efficient workflow and organization. With future enhancements, the system can become even more robust and user-friendly, making it an essential tool for any mechanic workshop.
