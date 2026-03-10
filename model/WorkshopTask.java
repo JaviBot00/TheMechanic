@@ -1,4 +1,4 @@
-package Taller.model;
+package model;
 
 public class WorkshopTask implements Comparable<WorkshopTask> {
 
@@ -16,12 +16,12 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
      * Constructor for WorkshopTask class.
      * Initializes the workshop task with the provided attributes.
      * 
-     * @param diagnostic    The diagnostic information of the workshop task
-     * @param previewHours  The previewed hours of the workshop task
-     * @param initDate      The initial date of the workshop task
-     * @param c             The client associated with the workshop task
-     * @param v             The vehicle associated with the workshop task
-     * @param m             The mechanic associated with the workshop task
+     * @param diagnostic   The diagnostic information of the workshop task
+     * @param previewHours The previewed hours of the workshop task
+     * @param initDate     The initial date of the workshop task
+     * @param c            The client associated with the workshop task
+     * @param v            The vehicle associated with the workshop task
+     * @param m            The mechanic associated with the workshop task
      */
     public WorkshopTask(String diagnostic, float previewHours, String initDate, Client c, Vehicle v, Mechanic m) {
         this.diagnostic = diagnostic;
@@ -109,7 +109,8 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
         if (isFinished) {
             return;
         }
-        if (hours <= 0) return;
+        if (hours <= 0)
+            return;
         realHours += hours;
     }
 
@@ -124,10 +125,12 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
     }
 
     /**
-     * Compares this workshop task with another workshop task based on their initial dates.
+     * Compares this workshop task with another workshop task based on their initial
+     * dates.
      * 
      * @param o The other workshop task to compare with
-     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object
+     * @return a negative integer, zero, or a positive integer as this object is
+     *         less than, equal to, or greater than the specified object
      */
     @Override
     public int compareTo(WorkshopTask o) {

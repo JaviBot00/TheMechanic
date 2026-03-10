@@ -1,18 +1,18 @@
-package Taller.view;
+package view;
 
-import Taller.controller.Controller;
+import controller.MainController;
 
 import java.util.Scanner;
 
 public class MainTaller {
 
-    private static Controller controller;
+    private static MainController mainController;
 
     public static void main(String[] args) {
         System.out.println("Bienvenido al sistema de gestión del taller.");
 
-        controller = Controller.getInstance();
-        System.out.println("Controller inicializado: " + (controller != null));
+        mainController = MainController.getInstance();
+        System.out.println("MainController inicializado: " + (mainController != null));
 
         boolean onGoing = true;
 
@@ -50,10 +50,10 @@ public class MainTaller {
                 registrarMecanico();
                 break;
             case 3:
-                listarClientes();
+                listClients();
                 break;
             case 4:
-                listarClientesPorApellido();
+                findClientsBySurname();
                 break;
             case 5:
                 listarMecanicos();
@@ -70,15 +70,16 @@ public class MainTaller {
         String person = registerPerson();
         String cc = String.valueOf(readInt("Client Code: "));
         String csvCliente = person + ";" + cc;
-        checkRegistration(controller.addClient(csvCliente));
+        checkRegistration(mainController.getClientController().createClient(csvCliente));
     }
 
-    public static void registrarMecanico() { // se necesita "name;surname1;surname2;nif;email;telephone;registrationDate;especiality"
+    public static void registrarMecanico() { // se necesita
+                                             // "name;surname1;surname2;nif;email;telephone;registrationDate;especiality"
         String person = registerPerson();
         String rD = requestData("Registration Date: ");
         String espe = requestData("Especiality: ");
         String csvMecanico = person + ";" + rD + ";" + espe;
-        checkRegistration(controller.addMechanic(csvMecanico));
+        checkRegistration(mainController.getMechanicController().createMechanic(csvMecanico));
     }
 
     private static void checkRegistration(boolean b) {
@@ -99,27 +100,41 @@ public class MainTaller {
         return name + ";" + sN1 + ";" + sN2 + ";" + nif + ";" + email + ";" + tel;
     }
 
-    public static void listarClientes() { // return csv
-        String datosDeClientesTodas = controller.listClients();
-        System.out.println("List of Clients:\n");
-        imprimirDatos(datosDeClientesTodas);
+    public static void findClientByNif() { // return csv
+        String nif = requestData("NIF to look for: ");
+        String clientData = mainController.getClientController().findClientByNif(nif);
+        imprimirDatos(clientData);
     }
 
-    public static void listarClientesPorApellido() { // return csv
-        String apellido = requestData("Surname to look for: ");
-        String datosCliente = controller.findClientsBySurname(apellido);
-        imprimirDatos(datosCliente);
+    public static void findClientsBySurname() { // return csv
+        String surname = requestData("Surname to look for: ");
+        String clientData = mainController.getClientController().findClientsBySurname(surname);
+        imprimirDatos(clientData);
+    }
+
+    public static void listClients() { // return csv
+        String allClientsData = mainController.getClientController().listClients();
+        System.out.println("List of Clients:\n");
+        imprimirDatos(allClientsData);
     }
 
     public static void listarMecanicos() { // return csv
-        String datosDeMecanicosTodas = controller.listMechanics();
+        String datosDeMecanicosTodas = mainController.getMechanicController().listMechanics();
         System.out.println("List of Mechanics:\n");
         imprimirDatos(datosDeMecanicosTodas);
     }
 
     public static void listarPersonas() { // return csv
-        imprimirDatos(controller.listPeople());
+        imprimirDatos(mainController.listPeople());
     }
+
+    // public boolean payTask(String vehicleReg, String mechanicNif) {
+    // WorkshopTask task = ...
+    // if (task == null || !task.isFinished()) return false;
+    //
+    // task.setPaid(true);
+    // return true;
+    // }
 
     private static void imprimirDatos(String dataset) {
         String[] filas = dataset.split("\n");
@@ -133,7 +148,8 @@ public class MainTaller {
 
     private static void imprimirColumnas(String line) {
         // String formato = "%-15s %-15s %-15s %-15s %-30s %-12s %-12s%n";
-        // System.out.printf(formato, "nombre", "apellido1", "apellido2", "dni", "email", "telefono", "codCliente");
+        // System.out.printf(formato, "nombre", "apellido1", "apellido2", "dni",
+        // "email", "telefono", "codCliente");
 
         String[] columnas = line.split(";");
         for (String c : columnas) {

@@ -1,4 +1,4 @@
-package Taller.model;
+package model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,7 +6,8 @@ import java.util.List;
 
 /**
  * Client class representing a client of the workshop.
- * Inherits from Person and has additional attributes and methods specific to clients.
+ * Inherits from Person and has additional attributes and methods specific to
+ * clients.
  */
 public class Client extends Person {
 
@@ -21,7 +22,8 @@ public class Client extends Person {
 
     /**
      * Constructor for Client class.
-     * Initializes the client with the provided attributes and an empty list of vehicles.
+     * Initializes the client with the provided attributes and an empty list of
+     * vehicles.
      *
      * @param name       The name of the client.
      * @param surname1   The first surname of the client.
@@ -31,14 +33,16 @@ public class Client extends Person {
      * @param telephone  The telephone number of the client.
      * @param clientCode The unique code assigned to the client.
      */
-    public Client(String name, String surname1, String surname2, String nif, String email, String telephone, int clientCode) {
+    public Client(String name, String surname1, String surname2, String nif, String email, String telephone,
+            int clientCode) {
         super(name, surname1, surname2, nif, email, telephone);
         this.clientCode = clientCode;
         this.vehicles = new ArrayList<>();
     }
 
     /**
-     * Retrieves the CSV format string for the Client class, which includes the CSV format of the Person class and the clientCode attribute.
+     * Retrieves the CSV format string for the Client class, which includes the CSV
+     * format of the Person class and the clientCode attribute.
      * The format is: "name;surname1;surname2;nif;email;telephone;clientCode"
      *
      * @return A string representing the CSV format for the Client class.
@@ -65,18 +69,22 @@ public class Client extends Person {
      * Retrieves a vehicle from the client's list of vehicles based on its index.
      *
      * @param index The index of the vehicle to be retrieved.
-     * @return The vehicle at the specified index, or null if the index is out of bounds.
+     * @return The vehicle at the specified index, or null if the index is out of
+     *         bounds.
      */
     public Vehicle getVehicle(int index) {
-        if (index < 0 || index >= vehicles.size()) return null;
+        if (index < 0 || index >= vehicles.size())
+            return null;
         return vehicles.get(index);
     }
 
     /**
-     * Retrieves a vehicle from the client's list of vehicles based on its registration code.
+     * Retrieves a vehicle from the client's list of vehicles based on its
+     * registration code.
      *
      * @param rC The registration code of the vehicle to be retrieved.
-     * @return The vehicle with the specified registration code, or null if no such vehicle exists in the client's list.
+     * @return The vehicle with the specified registration code, or null if no such
+     *         vehicle exists in the client's list.
      */
     public Vehicle getVehicleByRegistrationCode(String rC) {
         for (Vehicle v : vehicles) {
@@ -91,7 +99,8 @@ public class Client extends Person {
      * Adds a vehicle to the client's list of vehicles.
      *
      * @param v The vehicle to be added.
-     * @return true if the vehicle was added successfully, false if the vehicle is null or already exists in the client's list.
+     * @return true if the vehicle was added successfully, false if the vehicle is
+     *         null or already exists in the client's list.
      */
     public boolean addVehicle(Vehicle v) {
         if (v != null) {
@@ -106,19 +115,24 @@ public class Client extends Person {
     }
 
     /**
-     * Updates a vehicle in the client's list of vehicles based on its registration code.
-     * The method searches for the vehicle with the specified registration code and replaces it with the new vehicle information if found.
+     * Updates a vehicle in the client's list of vehicles based on its registration
+     * code.
+     * The method searches for the vehicle with the specified registration code and
+     * replaces it with the new vehicle information if found.
      *
      * @param rC   The registration code of the vehicle to be updated.
      * @param newV The new vehicle information to replace the existing vehicle.
-     * @return true if the vehicle was updated successfully, false if no such vehicle exists in the client's list or if the new vehicle is null.
+     * @return true if the vehicle was updated successfully, false if no such
+     *         vehicle exists in the client's list or if the new vehicle is null.
      */
     public boolean updateVehicle(String rC, Vehicle newV) {
-//        Vehicle v = this.getVehicleByRegistrationCode(rC);
-//        if (v == null) return false;
-        if (newV == null) return false;
+        // Vehicle v = this.getVehicleByRegistrationCode(rC);
+        // if (v == null) return false;
+        if (newV == null)
+            return false;
 
-        if (!newV.getRegistrationCode().equalsIgnoreCase(rC)) return false;
+        if (!newV.getRegistrationCode().equalsIgnoreCase(rC))
+            return false;
 
         for (int i = 0; i < vehicles.size(); i++) {
             if (vehicles.get(i).getRegistrationCode().equalsIgnoreCase(rC)) {
@@ -130,11 +144,14 @@ public class Client extends Person {
     }
 
     /**
-     * Deletes a vehicle from the client's list of vehicles based on its registration code.
-     * The method searches for the vehicle with the specified registration code and removes it from the list if found.
+     * Deletes a vehicle from the client's list of vehicles based on its
+     * registration code.
+     * The method searches for the vehicle with the specified registration code and
+     * removes it from the list if found.
      *
      * @param v The vehicle to be removed.
-     * @return true if the vehicle was deleted successfully, false if no such vehicle exists in the client's list.
+     * @return true if the vehicle was deleted successfully, false if no such
+     *         vehicle exists in the client's list.
      */
     public boolean deleteVehicle(Vehicle v) {
         return vehicles.remove(v);
@@ -150,25 +167,31 @@ public class Client extends Person {
 
     /**
      * Returns a string representation of the Client object in CSV format.
-     * The format is: "name;surname1;surname2;nif;email;telephone;clientCode" followed by a newline character.
-     * The string includes the CSV representation of the Person attributes and the clientCode specific to the Client class.
+     * The format is: "name;surname1;surname2;nif;email;telephone;clientCode"
+     * followed by a newline character.
+     * The string includes the CSV representation of the Person attributes and the
+     * clientCode specific to the Client class.
      *
      * @return A string representing the Client in CSV format.
      */
     @Override
     public String toString() {
-        // return "Client [codCliente=" + codCliente + ", nombre=" + nombre + ", apellidos1=" + apellidos1
-        //         + ", apellidos2=" + apellidos2 + ", dni=" + dni + ", email=" + email + ", telefono=" + telefono + "]";
+        // return "Client [codCliente=" + codCliente + ", nombre=" + nombre + ",
+        // apellidos1=" + apellidos1
+        // + ", apellidos2=" + apellidos2 + ", dni=" + dni + ", email=" + email + ",
+        // telefono=" + telefono + "]";
         return super.toString() + clientCode + ";";
     }
 
     /**
      * Compares this client with another person based on their client codes.
-     * If the other person is not a Client, it delegates to the superclass's compareTo method.
+     * If the other person is not a Client, it delegates to the superclass's
+     * compareTo method.
      * Otherwise, it compares the client codes of this client and the other person.
      * 
      * @param p The other person to compare with
-     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object
+     * @return a negative integer, zero, or a positive integer as this object is
+     *         less than, equal to, or greater than the specified object
      */
     @Override
     public int compareTo(Person p) {
@@ -178,14 +201,13 @@ public class Client extends Person {
         return Integer.compare(this.clientCode, ((Client) p).getClientCode());
     }
 
-
-//    @Override
-//    public int compareTo(Client p) {
-//        if (p instanceof Client){
-//            Integer c1 = new Integer(this.getCodCliente());
-//            Integer c2 = new Integer(((Client)p).getCodCliente());
-//            return c1.compareTo(c2);
-//        }
-//        return super.compareTo(p);
-//    }
+    // @Override
+    // public int compareTo(Client p) {
+    // if (p instanceof Client){
+    // Integer c1 = new Integer(this.getCodCliente());
+    // Integer c2 = new Integer(((Client)p).getCodCliente());
+    // return c1.compareTo(c2);
+    // }
+    // return super.compareTo(p);
+    // }
 }

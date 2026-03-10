@@ -1,10 +1,11 @@
-package Taller.model;
+package model;
 
 import java.util.Comparator;
 
 /**
  * Abstract class representing a person in the workshop system.
- * This class serves as a base for specific types of people, such as clients and mechanics.
+ * This class serves as a base for specific types of people, such as clients and
+ * mechanics.
  * It implements the Comparable interface to allow sorting by surname and name.
  */
 public abstract class Person implements Comparable<Person> {
@@ -84,7 +85,6 @@ public abstract class Person implements Comparable<Person> {
         this.telephone = telephone;
     }
 
-    
     /**
      * Gets the CSV format string for the Person class.
      * "name;surname1;surname2;nif;email;telephone"
@@ -104,44 +104,44 @@ public abstract class Person implements Comparable<Person> {
     @Override
     public String toString() {
         return this.name + ";"
-            + this.surname1 + ";"
-            + this.surname2 + ";"
-            + this.nif + ";"
-            + this.email + ";"
-            + this.telephone + ";";
+                + this.surname1 + ";"
+                + this.surname2 + ";"
+                + this.nif + ";"
+                + this.email + ";"
+                + this.telephone + ";";
     }
 
-//    @Override
-//    public int compareTo(Person p) {
-//        return this.codCliente - p.codCliente; // sort by id
-//        if (this.apellido1 == null && p.apellido1 == null) return 0;
-//        if (this.apellido1 == null) return -1;
-//        if (p.apellido1 == null) return 1;
-//        return this.apellido1.compareTo(p.apellido1);
-//        return this.apellido1.compareToIgnoreCase(p.apellido1);
-//        return Comparator
-//                .nullsLast(String::compareTo)
-//                .compare(this.apellido1, p.apellido1);
+    // @Override
+    // public int compareTo(Person p) {
+    // return this.codCliente - p.codCliente; // sort by id
+    // if (this.apellido1 == null && p.apellido1 == null) return 0;
+    // if (this.apellido1 == null) return -1;
+    // if (p.apellido1 == null) return 1;
+    // return this.apellido1.compareTo(p.apellido1);
+    // return this.apellido1.compareToIgnoreCase(p.apellido1);
+    // return Comparator
+    // .nullsLast(String::compareTo)
+    // .compare(this.apellido1, p.apellido1);
 
-//    @Override
-//    public int compareTo(Person p) {
-//        return Comparator
-//                .comparing(Person::getApellido1, String.CASE_INSENSITIVE_ORDER)
-//                .thenComparing(Person::getApellido2, String.CASE_INSENSITIVE_ORDER)
-//                .thenComparing(Person::getNombre, String.CASE_INSENSITIVE_ORDER)
-//                .compare(this, p);
-//    }
+    // @Override
+    // public int compareTo(Person p) {
+    // return Comparator
+    // .comparing(Person::getApellido1, String.CASE_INSENSITIVE_ORDER)
+    // .thenComparing(Person::getApellido2, String.CASE_INSENSITIVE_ORDER)
+    // .thenComparing(Person::getNombre, String.CASE_INSENSITIVE_ORDER)
+    // .compare(this, p);
+    // }
 
     @Override
     public int compareTo(Person p) {
         return Comparator
-            .comparing(Person::getSurname1,
-                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
-            .thenComparing(Person::getSurname2,
-                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
-            .thenComparing(Person::getName,
-                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
-            .compare(this, p);
+                .comparing(Person::getSurname1,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
+                .thenComparing(Person::getSurname2,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
+                .thenComparing(Person::getName,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
+                .compare(this, p);
     }
 
 }

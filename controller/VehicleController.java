@@ -1,7 +1,7 @@
-package Taller.controller;
+package controller;
 
-import Taller.data.DataStore;
-import Taller.model.*;
+import data.DataStore;
+import model.*;
 
 public class VehicleController {
 
@@ -12,13 +12,16 @@ public class VehicleController {
     }
 
     public boolean createVehicleToClient(String cNif, Vehicle.VehicleType vType, String csvVehicle) {
-        if (cNif == null || vType == null || csvVehicle == null) return false;
+        if (cNif == null || vType == null || csvVehicle == null)
+            return false;
 
         for (Client c : data.getClients()) {
             if (c.getNif().equalsIgnoreCase(cNif)) {
                 Vehicle v = parseVehicle(vType, csvVehicle, c);
-                if (v == null) return false;
-                if (!c.addVehicle(v)) return false;
+                if (v == null)
+                    return false;
+                if (!c.addVehicle(v))
+                    return false;
                 return !data.getVehicles().contains(v);
             }
         }
@@ -44,34 +47,43 @@ public class VehicleController {
     }
 
     public boolean updateVehicle(String registrationCode, String csvVehicle) {
-        if (registrationCode == null || csvVehicle == null) return false;
+        if (registrationCode == null || csvVehicle == null)
+            return false;
 
         Vehicle v = findVehicleByRegistration(registrationCode);
-        if (v == null) return false;
+        if (v == null)
+            return false;
 
         String[] dataSet = csvVehicle.split(";");
-        if (dataSet.length < 2) return false;
+        if (dataSet.length < 2)
+            return false;
 
-        if (!dataSet[0].isBlank()) v.setRegistrationCode(dataSet[0]);
+        if (!dataSet[0].isBlank())
+            v.setRegistrationCode(dataSet[0]);
 
-        if (!dataSet[1].isBlank()) v.setModel(dataSet[1]);
+        if (!dataSet[1].isBlank())
+            v.setModel(dataSet[1]);
 
         return false;
     }
 
     public boolean changeVehicleOwner(String registrationCode, String newOwnerNif) {
 
-        if (registrationCode == null || newOwnerNif == null) return false;
+        if (registrationCode == null || newOwnerNif == null)
+            return false;
 
         Vehicle v = findVehicleByRegistration(registrationCode);
-        if (v == null) return false;
+        if (v == null)
+            return false;
 
         Client newOwner = findClientByNif(newOwnerNif);
-        if (newOwner == null) return false;
+        if (newOwner == null)
+            return false;
 
         Client oldOwner = v.getProprietary();
 
-        if (oldOwner.equals(newOwner)) return true; // nothing to change
+        if (oldOwner.equals(newOwner))
+            return true; // nothing to change
 
         oldOwner.deleteVehicle(v);
         v.setProprietary(newOwner);
@@ -81,17 +93,21 @@ public class VehicleController {
     }
 
     public boolean changeVehicleType(String registrationCode, Vehicle.VehicleType newType) {
-        if (registrationCode == null || newType == null) return false;
+        if (registrationCode == null || newType == null)
+            return false;
 
         Vehicle oldVehicle = findVehicleByRegistration(registrationCode);
-        if (oldVehicle == null) return false;
+        if (oldVehicle == null)
+            return false;
 
         Client owner = oldVehicle.getProprietary();
 
         // Create new vehicle of desired type
-        Vehicle newVehicle = parseVehicle(newType, oldVehicle.getRegistrationCode() + ";" + oldVehicle.getModel(), owner);
+        Vehicle newVehicle = parseVehicle(newType, oldVehicle.getRegistrationCode() + ";" + oldVehicle.getModel(),
+                owner);
 
-        if (newVehicle == null) return false;
+        if (newVehicle == null)
+            return false;
 
         // Copy workshop tasks
         int index = 0;
@@ -120,10 +136,12 @@ public class VehicleController {
     }
 
     public boolean deleteVehicle(String registrationCode) {
-        if (registrationCode == null) return false;
+        if (registrationCode == null)
+            return false;
 
         Vehicle v = findVehicleByRegistration(registrationCode);
-        if (v == null) return false;
+        if (v == null)
+            return false;
 
         // Remove from owner
         if (v.getProprietary() != null) {
@@ -136,11 +154,12 @@ public class VehicleController {
         return true;
     }
 
-
     private Vehicle parseVehicle(Vehicle.VehicleType vType, String csvVehicle, Client c) {
-        if (csvVehicle == null) return null;
+        if (csvVehicle == null)
+            return null;
         String[] dataset = csvVehicle.split(";");
-        if (dataset.length < 2) return null;
+        if (dataset.length < 2)
+            return null;
         switch (vType) {
             case Vehicle.VehicleType.MOTORCYCLE -> {
                 return new Motorcycle(dataset[0], dataset[1], c);
@@ -160,14 +179,16 @@ public class VehicleController {
 
     private Client findClientByNif(String nif) {
         for (Client c : data.getClients()) {
-            if (c.getNif().equalsIgnoreCase(nif)) return c;
+            if (c.getNif().equalsIgnoreCase(nif))
+                return c;
         }
         return null;
     }
 
     private Vehicle findVehicleByRegistration(String registration) {
         for (Vehicle v : data.getVehicles()) {
-            if (v.getRegistrationCode().equalsIgnoreCase(registration)) return v;
+            if (v.getRegistrationCode().equalsIgnoreCase(registration))
+                return v;
         }
         return null;
     }

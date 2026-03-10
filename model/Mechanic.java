@@ -1,4 +1,4 @@
-package Taller.model;
+package model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,7 +6,8 @@ import java.util.List;
 
 /**
  * Mechanic class representing a mechanic of the workshop.
- * Inherits from Person and has additional attributes and methods specific to mechanics.
+ * Inherits from Person and has additional attributes and methods specific to
+ * mechanics.
  */
 public class Mechanic extends Person {
 
@@ -22,18 +23,20 @@ public class Mechanic extends Person {
 
     /**
      * Constructor for Mechanic class.
-     * Initializes the mechanic with the provided attributes and an empty list of workshop tasks.
+     * Initializes the mechanic with the provided attributes and an empty list of
+     * workshop tasks.
      *
-     * @param name              The name of the mechanic
-     * @param surname1          The first surname of the mechanic
-     * @param surname2          The second surname of the mechanic
-     * @param nif               The NIF (National Identity Document) of the mechanic
-     * @param email             The email address of the mechanic
-     * @param telephone         The telephone number of the mechanic
-     * @param registrationDate  The registration date of the mechanic
-     * @param specialty         The specialty of the mechanic
+     * @param name             The name of the mechanic
+     * @param surname1         The first surname of the mechanic
+     * @param surname2         The second surname of the mechanic
+     * @param nif              The NIF (National Identity Document) of the mechanic
+     * @param email            The email address of the mechanic
+     * @param telephone        The telephone number of the mechanic
+     * @param registrationDate The registration date of the mechanic
+     * @param specialty        The specialty of the mechanic
      */
-    public Mechanic(String name, String surname1, String surname2, String nif, String email, String telephone, String registrationDate, String specialty) {
+    public Mechanic(String name, String surname1, String surname2, String nif, String email, String telephone,
+            String registrationDate, String specialty) {
         super(name, surname1, surname2, nif, email, telephone);
         this.registrationDate = registrationDate;
         this.specialty = specialty;
@@ -43,7 +46,8 @@ public class Mechanic extends Person {
 
     /**
      * Returns the CSV format string for Mechanic objects.
-     * The format is: "name;surname1;surname2;nif;email;telephone;registrationDate;specialty"
+     * The format is:
+     * "name;surname1;surname2;nif;email;telephone;registrationDate;specialty"
      *
      * @return the CSV format string
      */
@@ -76,13 +80,13 @@ public class Mechanic extends Person {
         return workshopTasks.get(i);
     }
 
-//    public WorkshopTask getWorkshopTask(int i) {
-//        return workshopTasks.get(i);
-//        // return workshopTasks.get(i)
-//        // .stream()
-//        // .filter(t -> t.getMechanic().equals(this))
-//        // .toList();
-//    }
+    // public WorkshopTask getWorkshopTask(int i) {
+    // return workshopTasks.get(i);
+    // // return workshopTasks.get(i)
+    // // .stream()
+    // // .filter(t -> t.getMechanic().equals(this))
+    // // .toList();
+    // }
 
     /**
      * Deletes a workshop task from the mechanic's list of tasks.
@@ -117,7 +121,9 @@ public class Mechanic extends Person {
     /**
      * Returns a string representation of the Mechanic object.
      * The string includes all the attributes of the Mechanic object.
-     * The format is: "name;surname1;surname2;nif;email;telephone;registrationDate;specialty;workshopTasksSize" followed by a newline character.
+     * The format is:
+     * "name;surname1;surname2;nif;email;telephone;registrationDate;specialty;workshopTasksSize"
+     * followed by a newline character.
      *
      * @return a string representation of the Mechanic object
      */

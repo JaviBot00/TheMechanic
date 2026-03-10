@@ -1,4 +1,4 @@
-package Taller.model;
+package model;
 
 public class Van extends Vehicle {
 

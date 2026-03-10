@@ -1,7 +1,7 @@
-package Taller.controller;
+package controller;
 
-import Taller.data.DataStore;
-import Taller.model.*;
+import data.DataStore;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +52,8 @@ public class MainController {
         StringBuilder sb = new StringBuilder();
 
         List<Person> people = new ArrayList<>();
-//        people.addAll(clients);
-//        people.addAll(mechanics);
+        // people.addAll(clients);
+        // people.addAll(mechanics);
 
         for (Person p : people) {
             sb.append(p.toString()).append("\n");
