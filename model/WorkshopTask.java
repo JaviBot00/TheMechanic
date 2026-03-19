@@ -1,39 +1,142 @@
 package model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+/**
+ * WorkshopTask class representing a repair or maintenance task in the workshop.
+ * Tracks diagnostic information, estimated and actual hours, completion status,
+ * and payment status.
+ */
 public class WorkshopTask implements Comparable<WorkshopTask> {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final String initDate;
     private final Client client;
     private final Vehicle vehicle;
     private final Mechanic mechanic;
     private String diagnostic;
+    private String solution;
     private float previewHours;
     private float realHours;
     private boolean isFinished;
     private boolean isPaid;
+    private String notes;
 
     /**
      * Constructor for WorkshopTask class.
      * Initializes the workshop task with the provided attributes.
-     * 
-     * @param diagnostic   The diagnostic information of the workshop task
-     * @param previewHours The previewed hours of the workshop task
-     * @param initDate     The initial date of the workshop task
-     * @param c            The client associated with the workshop task
-     * @param v            The vehicle associated with the workshop task
-     * @param m            The mechanic associated with the workshop task
+     *
+     * @param diagnostic   Description of the problem identified
+     * @param previewHours Estimated number of hours to complete the task
+     * @param initDate     Date when the task was created (format: yyyy-MM-dd HH:mm)
+     * @param client       The client who owns the vehicle
+     * @param vehicle      The vehicle being serviced
+     * @param mechanic     The mechanic assigned to the task
      */
-    public WorkshopTask(String diagnostic, float previewHours, String initDate, Client c, Vehicle v, Mechanic m) {
+    public WorkshopTask(String diagnostic, float previewHours, String initDate, Client client, Vehicle vehicle,
+            Mechanic mechanic) {
         this.diagnostic = diagnostic;
         this.previewHours = previewHours;
         this.initDate = initDate;
-        this.client = c;
-        this.vehicle = v;
-        this.mechanic = m;
+        this.client = client;
+        this.vehicle = vehicle;
+        this.mechanic = mechanic;
         this.realHours = 0f;
         this.isFinished = false;
         this.isPaid = false;
+        this.solution = "";
+        this.notes = "";
     }
+
+    /**
+     * Calculates the total cost of this task based on the vehicle type and real
+     * hours.
+     * Only calculated if the task is finished.
+     *
+     * @return the total cost in euros, or 0 if not finished
+     */
+    public float getTotalCost() {
+        if (!isFinished) {
+            return 0f;
+        }
+        return vehicle.calculatePrice(realHours);
+    }
+
+    /**
+     * Returns the progress percentage of this task.
+     * Calculated as: (realHours / previewHours) * 100
+     * If previewHours is 0, returns 0.
+     *
+     * @return progress as a percentage between 0 and 100
+     */
+    public float getProgress() {
+        if (previewHours <= 0) {
+            return 0f;
+        }
+        return Math.min((realHours / previewHours) * 100f, 100f);
+    }
+
+    /**
+     * Returns the estimated cost based on preview hours.
+     * Useful for quotations before work begins.
+     *
+     * @return the estimated cost in euros
+     */
+    public float getEstimatedCost() {
+        return vehicle.calculatePrice(previewHours);
+    }
+
+    /**
+     * Adds hours to the workshop task.
+     * Hours can only be added if the task is not finished.
+     *
+     * @param hours the hours to be added
+     * @throws IllegalArgumentException if hours is negative or zero
+     */
+    public void addHours(float hours) {
+        if (isFinished) {
+            throw new IllegalStateException("Cannot add hours to a finished task");
+        }
+        if (hours <= 0) {
+            throw new IllegalArgumentException("Hours must be greater than zero");
+        }
+        realHours += hours;
+    }
+
+    /**
+     * Finishes the workshop task.
+     * Once finished, no more hours can be added and the task can be paid.
+     */
+    public void finish() {
+        if (!isFinished) {
+            isFinished = true;
+        }
+    }
+
+    /**
+     * Marks the task as paid.
+     * Can only be paid if the task is already finished.
+     *
+     * @throws IllegalStateException if the task is not finished
+     */
+    public void markAsPaid() {
+        if (!isFinished) {
+            throw new IllegalStateException("Cannot pay an unfinished task");
+        }
+        this.isPaid = true;
+    }
+
+    /**
+     * Marks the task as unpaid.
+     * Can be used to reverse a payment if needed.
+     */
+    public void markAsUnpaid() {
+        this.isPaid = false;
+    }
+
+    // ============ Getters and Setters ============
 
     public String getInitDate() {
         return initDate;
@@ -56,7 +159,19 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
     }
 
     public void setDiagnostic(String diagnostic) {
-        this.diagnostic = diagnostic;
+        if (diagnostic != null && !diagnostic.isBlank()) {
+            this.diagnostic = diagnostic;
+        }
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        if (solution != null) {
+            this.solution = solution;
+        }
     }
 
     public float getPreviewHours() {
@@ -64,7 +179,9 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
     }
 
     public void setPreviewHours(float previewHours) {
-        this.previewHours = previewHours;
+        if (previewHours > 0) {
+            this.previewHours = previewHours;
+        }
     }
 
     public float getRealHours() {
@@ -72,7 +189,9 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
     }
 
     public void setRealHours(float realHours) {
-        this.realHours = realHours;
+        if (realHours >= 0) {
+            this.realHours = realHours;
+        }
     }
 
     public boolean isFinished() {
@@ -87,53 +206,70 @@ public class WorkshopTask implements Comparable<WorkshopTask> {
         return isPaid;
     }
 
-    /**
-     * Sets the paid status of the workshop task.
-     * The paid status can only be set if the workshop task is finished.
-     * 
-     * @param paid The paid status to be set
-     */
     public void setPaid(boolean paid) {
-        if (isFinished) {
-            this.isPaid = paid;
+        if (paid && !isFinished) {
+            throw new IllegalStateException("Cannot mark task as paid before it is finished");
+        }
+        this.isPaid = paid;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        if (notes != null) {
+            this.notes = notes;
         }
     }
 
     /**
-     * Adds hours to the workshop task.
-     * The hours can only be added if the workshop task is not finished.
-     * 
-     * @param hours The hours to be added
+     * Returns the current status of the task as a string.
+     *
+     * @return status string (Pending, In Progress, Finished, or Paid)
      */
-    public void addHoras(float hours) {
-        if (isFinished) {
-            return;
-        }
-        if (hours <= 0)
-            return;
-        realHours += hours;
-    }
-
-    /**
-     * Finishes the workshop task.
-     * The workshop task can only be finished if it is not already finished.
-     */
-    public void finish() {
-        if (!isFinished) {
-            isFinished = true;
+    public String getStatus() {
+        if (isPaid) {
+            return "Paid";
+        } else if (isFinished) {
+            return "Finished";
+        } else if (realHours > 0) {
+            return "In Progress";
+        } else {
+            return "Pending";
         }
     }
 
     /**
-     * Compares this workshop task with another workshop task based on their initial
-     * dates.
-     * 
+     * Compares this workshop task with another based on their initial dates.
+     *
      * @param o The other workshop task to compare with
-     * @return a negative integer, zero, or a positive integer as this object is
-     *         less than, equal to, or greater than the specified object
+     * @return a negative integer, zero, or a positive integer
      */
     @Override
     public int compareTo(WorkshopTask o) {
         return this.getInitDate().compareTo(o.getInitDate());
+    }
+
+    /**
+     * Returns a string representation of the WorkshopTask in a detailed format.
+     *
+     * @return string representation of the task
+     */
+    @Override
+    public String toString() {
+        return String.format(
+                "WorkshopTask{" +
+                        "diagnostic='%s', " +
+                        "vehicle=%s, " +
+                        "mechanic=%s, " +
+                        "previewHours=%.1f, " +
+                        "realHours=%.1f, " +
+                        "status=%s, " +
+                        "estimatedCost=€%.2f, " +
+                        "actualCost=€%.2f}",
+                diagnostic, vehicle.getRegistrationCode(), mechanic.getName(),
+                previewHours, realHours, getStatus(),
+                getEstimatedCost(), getTotalCost());
     }
 }

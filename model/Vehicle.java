@@ -7,10 +7,12 @@ import java.util.List;
  * Abstract class representing a vehicle in the workshop.
  * Implements Comparable interface to allow sorting vehicles by registration
  * code.
+ *
+ * Each vehicle type has different hourly rates for billing purposes.
  */
 public abstract class Vehicle implements Comparable<Vehicle> {
 
-    private static final String CSV_FORMAT = "registrationCode;model;proprietary;workshopTasks";
+    private static final String CSV_FORMAT = "registrationCode;model;type;proprietary;workshopTasks";
     private final List<WorkshopTask> workshopTasks;
     private String registrationCode;
     private String model;
@@ -21,12 +23,11 @@ public abstract class Vehicle implements Comparable<Vehicle> {
      * Constructor for Vehicle class.
      * Initializes the vehicle with the provided attributes and an empty list of
      * workshop tasks.
-     * 
-     * @param registrationCode The registration code of the vehicle
-     * @param model            The model of the vehicle
-     * @param type             The type of vehicle (e.g., CAR, MOTORCYCLE, VAN,
-     *                         TRUCK)
-     * @param proprietary      The proprietary (client) of the vehicle
+     *
+     * @param registrationCode The registration code/license plate of the vehicle
+     * @param model            The model/brand of the vehicle
+     * @param type             The type of vehicle (CAR, MOTORCYCLE, VAN, TRUCK)
+     * @param proprietary      The client who owns the vehicle
      */
     public Vehicle(String registrationCode, String model, VehicleType type, Client proprietary) {
         this.registrationCode = registrationCode;
@@ -34,6 +35,36 @@ public abstract class Vehicle implements Comparable<Vehicle> {
         this.type = type;
         this.proprietary = proprietary;
         this.workshopTasks = new ArrayList<>();
+    }
+
+    /**
+     * Returns the hourly rate for this vehicle type in euros.
+     *
+     * @return the hourly rate
+     */
+    public abstract float getHourlyRate();
+
+    /**
+     * Returns any fixed difficulty fee for this vehicle type in euros.
+     * Returns 0 for vehicle types without a fixed fee.
+     *
+     * @return the fixed difficulty fee
+     */
+    public abstract float getFixedDifficultyFee();
+
+    /**
+     * Calculates the total price for the given number of hours.
+     * Formula: (hours * hourlyRate) + fixedDifficultyFee
+     *
+     * @param hours the number of hours worked
+     * @return the total price in euros
+     * @throws IllegalArgumentException if hours is negative
+     */
+    public float calculatePrice(float hours) {
+        if (hours < 0) {
+            throw new IllegalArgumentException("Hours cannot be negative");
+        }
+        return (hours * getHourlyRate()) + getFixedDifficultyFee();
     }
 
     /**
@@ -46,18 +77,6 @@ public abstract class Vehicle implements Comparable<Vehicle> {
         return Vehicle.CSV_FORMAT;
     }
 
-    public abstract float getPrice();
-
-    // public boolean addWorkshopTask(WorkshopTask wt) {
-    // if (workshopTasks.contains(wt)) return false;
-    //
-    // if (wt != null) {
-    // workshopTasks.add(wt);
-    // return true;
-    // }
-    // return false;
-    // }
-
     /**
      * Adds a workshop task to the vehicle's list of tasks.
      *
@@ -68,20 +87,21 @@ public abstract class Vehicle implements Comparable<Vehicle> {
         return workshopTasks.add(task);
     }
 
+    /**
+     * Returns the index of a workshop task in the vehicle's list of tasks.
+     *
+     * @param wt the workshop task
+     * @return the index of the task, or -1 if not found
+     */
     public int getIndexOfWorkshopTask(WorkshopTask wt) {
         return workshopTasks.indexOf(wt);
     }
-    // public int getWorkshopTaskCount() {
-    // return workshopTasks.size();
-    // }
 
     /**
      * Returns a workshop task from the vehicle's list of tasks by index.
-     * If the index is out of bounds, returns null.
      *
-     * @param i the index of the workshop task to be returned
-     * @return the workshop task at the specified index, or null if the index is out
-     *         of bounds
+     * @param i the index of the workshop task
+     * @return the workshop task at the specified index, or null if out of bounds
      */
     public WorkshopTask getWorkshopTaskByIndex(int i) {
         if (i < 0 || i >= workshopTasks.size()) {
@@ -98,6 +118,54 @@ public abstract class Vehicle implements Comparable<Vehicle> {
      */
     public boolean removeWorkshopTask(WorkshopTask task) {
         return workshopTasks.remove(task);
+    }
+
+    /**
+     * Returns the number of workshop tasks associated with this vehicle.
+     *
+     * @return the number of tasks
+     */
+    public int getWorkshopTasksCount() {
+        return workshopTasks.size();
+    }
+
+    /**
+     * Returns the total number of hours worked on this vehicle.
+     *
+     * @return the sum of real hours from all finished tasks
+     */
+    public float getTotalHoursWorked() {
+        return workshopTasks.stream()
+                .filter(WorkshopTask::isFinished)
+                .map(WorkshopTask::getRealHours)
+                .reduce(0f, Float::sum);
+    }
+
+    /**
+     * Returns the total revenue generated from this vehicle.
+     *
+     * @return the sum of costs from all paid tasks
+     */
+    public float getTotalRevenue() {
+        return workshopTasks.stream()
+                .filter(WorkshopTask::isPaid)
+                .map(WorkshopTask::getTotalCost)
+                .reduce(0f, Float::sum);
+    }
+
+    /**
+     * Returns the percentage of completed tasks for this vehicle.
+     *
+     * @return percentage as a number between 0 and 100, or 0 if no tasks
+     */
+    public float getCompletionPercentage() {
+        if (workshopTasks.isEmpty()) {
+            return 0f;
+        }
+        long finishedCount = workshopTasks.stream()
+                .filter(WorkshopTask::isFinished)
+                .count();
+        return (finishedCount * 100f) / workshopTasks.size();
     }
 
     public String getRegistrationCode() {
@@ -133,10 +201,8 @@ public abstract class Vehicle implements Comparable<Vehicle> {
     }
 
     /**
-     * Returns a string representation of the Vehicle object.
-     * The string includes all the attributes of the Vehicle object.
-     * The format is: "registrationCode;model;proprietary;workshopTasksSize"
-     * followed by a newline character.
+     * Returns a string representation of the Vehicle object in CSV format.
+     * Format: "registrationCode;model;type;proprietary;workshopTasksSize"
      *
      * @return a string representation of the Vehicle object
      */
@@ -144,16 +210,16 @@ public abstract class Vehicle implements Comparable<Vehicle> {
     public String toString() {
         return this.registrationCode + ";"
                 + this.model + ";"
-                + this.proprietary.getNif() + ";"
+                + this.type + ";"
+                + (this.proprietary != null ? this.proprietary.getNif() : "N/A") + ";"
                 + this.workshopTasks.size() + ";";
     }
 
     /**
-     * Compares this vehicle with another vehicle based on their registration codes.
-     * 
+     * Compares this vehicle with another vehicle based on registration codes.
+     *
      * @param v The other vehicle to compare with
-     * @return a negative integer, zero, or a positive integer as this object is
-     *         less than, equal to, or greater than the specified object
+     * @return a negative integer, zero, or a positive integer
      */
     @Override
     public int compareTo(Vehicle v) {
@@ -164,6 +230,19 @@ public abstract class Vehicle implements Comparable<Vehicle> {
      * Enum representing the type of vehicle.
      */
     public enum VehicleType {
-        MOTORCYCLE, CAR, VAN, TRUCK
+        MOTORCYCLE("Motorcycle"),
+        CAR("Car"),
+        VAN("Van"),
+        TRUCK("Truck");
+
+        private final String displayName;
+
+        VehicleType(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 }
